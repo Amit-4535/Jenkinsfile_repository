@@ -1,32 +1,38 @@
 
+pipeline {
+    agent any
 
-pipeline{
-   agent any
-   stages{
-     stage ('providing the access'){
-	steps{
-	  sh 'sudo usermod -aG docker $USER'
+    stages {
+        stage('check docker access') {
+            steps {
+                sh 'docker ps'
+                echo "✅ Docker is accessible to Jenkins"
+            }
+        }
+
+        stage('list containers') {
+            steps {
+                sh 'docker ps -a'
+            }
+        }
+
+        stage('list images') {
+            steps {
+                sh 'docker images -a'
+            }
+        }
+
+        stage('pull ubuntu image') {
+            steps {
+                sh 'docker pull ubuntu'
+            }
+        }
+
+        stage('run container') {
+            steps {
+                sh 'docker run -d --name container1 ubuntu sleep 60'
+            }
+        }
+    }
 }
-}
-     stage ('listing the containers'){
-	steps {
-	  sh 'docker ps -a'
-}
-}
-     stage ('listing the images'){
-	steps {
-	  sh 'docker images -a'
-}
-}
-     stage ('pull image from the registry'){
-	steps {
-	  sh 'docker pull ubuntu'
-}
-}
-     stage ('creating container'){
-	steps {
-	  sh 'docker run -it --name container1 ubuntu /bin/bash'
-}
-}
-}
-}
+
