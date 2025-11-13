@@ -3,6 +3,11 @@
 pipeline{
    agent any
    stages{
+     stage ('providing the access'){
+	steps{
+	  sh 'sudo usermod -aG docker $USER'
+}
+}
      stage ('listing the containers'){
 	steps {
 	  sh 'docker ps -a'
