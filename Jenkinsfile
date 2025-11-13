@@ -4,9 +4,11 @@
 pipeline {
    agent any
    stages {
-      stage ('checkout to folder'){
+      stage ('installing apache2'){
 	steps {
-	  sh 'cd Jenkinsfile_repository'
+	  sh 'sudo apt-get update -y'
+	  sh 'sudo apt-get upgrade -y'
+	  sh 'sudo apt-get install apache2 -y'
 }
 } 
       stage ('installing docker'){
