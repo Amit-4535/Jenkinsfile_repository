@@ -4,7 +4,7 @@ pipeline {
     stages {
 	stage('checkout stage'){
 	  steps {
-		git clone https://github.com/Amit-4535/Jenkinsfile_repository.git
+		sh 'git clone https://github.com/Amit-4535/Jenkinsfile_repository.git'
 }
 }
 	stage('build_Stage'){
