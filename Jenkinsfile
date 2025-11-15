@@ -3,11 +3,12 @@
 pipeline {
    agent any
    stages {
-      stage ('cloning repo'){
+      /*stage ('cloning repo'){
 	steps {
 	  sh 'git clone https://github.com/Amit-4535/Jenkinsfile_repository.git'
 }
 }
+*/
 
       stage ('list containers'){
 	steps {
