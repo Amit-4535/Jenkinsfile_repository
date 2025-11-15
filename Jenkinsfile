@@ -22,7 +22,7 @@ pipeline {
 	  sh 'docker images -a'
 }
 }
-      stage ('success message') {
+      stage ('success_message') {
 	steps {
 	  sh 'echo "above all the commands and jenkinsfile is much cleaner"'
 }
