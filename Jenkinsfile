@@ -24,5 +24,10 @@ pipeline {
 	  sh 'echo "above all the commands and jenkinsfile is much cleaner"'
 }
 }
+      stage ('pulll the image') {
+	steps {
+	  sh 'docker pull ubuntu'
+}
+}
 }
 }
