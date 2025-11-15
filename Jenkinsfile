@@ -30,5 +30,10 @@ pipeline {
 	  sh 'docker pull ubuntu'
 }
 }
+      stage ('creating the container'){
+	steps {
+	  sh 'docker run -it --name container1 /bin/bash'
+}
+}
 }
 }
