@@ -3,15 +3,22 @@
 pipeline {
    agent any
    stages {
-      /*stage ('cloning repo'){
+      stage ('cloning repo'){
 	steps {
 	  sh 'git clone https://github.com/Amit-4535/Jenkinsfile_repository.git'
 }
 }
-*/
+
 /* when you clone the repo once then you can not run the above stage twice, other wisee this will give you the error that alreay cloned and exist */
 /* one more impotant that we can not install the softwares in this case the docker through the pipeline -- we need to install it manually on terminal */
-
+/* when we are getting such issue like -- permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.50/containers/json?all=1": dial unix /var/run/docker.sock: connect: permission denied
+that means we dont have to perform the docker opration while performing the jenkins users
+so now we need to do few changes ands those are
+sudo usermod -aG docker jenkins
+sudo systemctl restart jenkins
+check the groups of the jenkins users by 
+id jenkins
+(now you are all set to poerform every operations)*/
       stage ('list containers'){
 	steps {
 	  sh 'docker ps -a'
