@@ -32,7 +32,7 @@ pipeline {
 }
       stage ('creating the container'){
 	steps {
-	  sh 'docker run -it --name container1 ubuntu /bin/bash'
+	  sh 'docker run -d --name container1 ubuntu /bin/bash'
 }
 }
 }
