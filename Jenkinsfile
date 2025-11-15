@@ -9,11 +9,6 @@ pipeline {
 }
 }
 
-      stage ('installing docker') {
-	steps {
-	  sh 'apt-get install docker.io'
-}
-}
       stage ('list containers'){
 	steps {
 	  sh 'docker ps -a'
