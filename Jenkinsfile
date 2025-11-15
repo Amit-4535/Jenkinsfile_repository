@@ -9,6 +9,8 @@ pipeline {
 }
 }
 */
+/* when you clone the repo once then you can not run the above stage twice, other wisee this will give you the error that alreay cloned and exist */
+/* one more impotant that we can not install the softwares in this case the docker through the pipeline -- we need to install it manually on terminal */
 
       stage ('list containers'){
 	steps {
@@ -33,6 +35,7 @@ pipeline {
       stage ('creating the container'){
 	steps {
 	  sh 'docker run -d --name container2 ubuntu /bin/bash'
+/* in this last stage we have defined -d cause if you use the -it then jenkins will not go inside the tty that means terminal hence always use the -d option */
 }
 }
 }
