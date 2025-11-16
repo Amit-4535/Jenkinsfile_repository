@@ -1,35 +1,46 @@
-
-
 pipeline {
     agent any
+
+    parameters {
+        string(name: 'IMAGE_TAG', defaultValue: '', description: 'Tag of the image to deploy')
+    }
 
     environment {
         DOCKERHUB_USER = 'amit4535'
         DOCKERHUB_REPO = 'myimage'
-        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
 
-        stage('Create Image from Container') {
+        stage('Pull Image from DockerHub') {
             steps {
-                sh "docker commit container1 ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${IMAGE_TAG}"
+                echo "Pulling image: ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${IMAGE_TAG}"
+                sh "docker pull ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${IMAGE_TAG}"
             }
         }
 
-        stage('Login to DockerHub') {
+        stage('Stop Old Container') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds',
-                                                 usernameVariable: 'USER',
-                                                 passwordVariable: 'PASS')]) {
-                    sh "echo $PASS | docker login -u $USER --password-stdin"
-                }
+                sh '''
+                    if docker ps -a --format '{{.Names}}' | grep -w newcontainer; then
+                        docker stop newcontainer || true
+                        docker rm newcontainer || true
+                    fi
+                '''
             }
         }
 
-        stage('Push Image') {
+        stage('Run New Container') {
             steps {
-                sh "docker push ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${IMAGE_TAG}"
+                sh """
+                    docker run -d --name newcontainer ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${IMAGE_TAG}
+                """
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                sh "docker ps -a | grep newcontainer"
             }
         }
 
