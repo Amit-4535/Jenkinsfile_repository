@@ -6,9 +6,10 @@ pipeline {
 /*   stage ('cloning the repo') {
 	steps {
 	  sh 'git clone https://github.com/Amit-4535/Jenkinsfile_repository.git'
+
+}
+}
 */
-}
-}
      stage ('pull the image from dockerhub') {
 	steps {
 	  sh 'docker pull ubuntu'
