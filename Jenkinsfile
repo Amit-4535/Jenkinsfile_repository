@@ -1,36 +1,44 @@
+
+
 pipeline {
     agent any
 
-    parameters {
-        string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Tag to deploy')
-    }
-
     environment {
-        DOCKERHUB_USER = "amit4535"
-        DOCKERHUB_REPO = "myimage"
+        DOCKERHUB_USER = 'amit4535'
+        DOCKERHUB_REPO = 'myimage'
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
 
-        stage('Pull Image from Docker Hub') {
+        stage('Create Image from Container') {
             steps {
-                echo "Pulling image: ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${IMAGE_TAG}"
-                sh "docker pull ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${IMAGE_TAG}"
+                sh "docker commit container1 ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${IMAGE_TAG}"
             }
         }
 
-        stage('Run Container') {
+        stage('Login to DockerHub') {
             steps {
-                sh """
-                    docker rm -f mycontainer || true
-                    docker run -d --name mycontainer ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${IMAGE_TAG}
-                """
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds',
+                                                 usernameVariable: 'USER',
+                                                 passwordVariable: 'PASS')]) {
+                    sh "echo $PASS | docker login -u $USER --password-stdin"
+                }
             }
         }
 
-        stage('Verify Deployment') {
+        stage('Push Image') {
             steps {
-                sh 'docker ps'
+                sh "docker push ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${IMAGE_TAG}"
+            }
+        }
+
+        stage('Trigger Deploy Job') {
+            steps {
+                build job: 'Deploy_Docker_Image',
+                      parameters: [
+                        string(name: 'IMAGE_TAG', value: "${IMAGE_TAG}")
+                      ]
             }
         }
     }
