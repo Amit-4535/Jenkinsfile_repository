@@ -33,14 +33,6 @@ pipeline {
             }
         }
 
-        stage('Trigger Deploy Job') {
-            steps {
-                build job: 'Deploy_Docker_Image',
-                      parameters: [
-                        string(name: 'IMAGE_TAG', value: "${IMAGE_TAG}")
-                      ]
-            }
-        }
     }
 }
 
