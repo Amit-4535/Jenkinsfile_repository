@@ -33,7 +33,7 @@ pipeline {
         stage('Run New Container') {
             steps {
                 echo "Running new container..."
-                sh "docker run -d --name newcontainer -p 8080:80 ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
+                sh "docker run -d --name newcontainer -p 8081:80 ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
             }
         }
 
