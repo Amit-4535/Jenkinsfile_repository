@@ -10,12 +10,12 @@ pipeline {
 }
 }
 */
-     stage ('pull the image from dockerhub') {
+     stage ('pull_the_image_from_dockerhub') {
 	steps {
 	  sh 'docker pull ubuntu'
 }
 }
-     stage ('creating the container from the image'){
+     stage ('creating_the_container_from_the_image'){
 	steps {
 	  sh 'docker run -d --name container1 ubuntu'
 }
