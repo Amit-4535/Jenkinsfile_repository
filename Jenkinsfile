@@ -1,5 +1,3 @@
-
-
 pipeline {
     agent any
 
@@ -16,6 +14,7 @@ pipeline {
 
         stage('Pull Image from Docker Hub') {
             steps {
+                echo "Pulling image: ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${IMAGE_TAG}"
                 sh "docker pull ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${IMAGE_TAG}"
             }
         }
