@@ -1,46 +1,53 @@
-
-
 pipeline {
     agent any
 
     environment {
         DOCKERHUB_USER = 'amit4535'
         DOCKERHUB_REPO = 'myimage'
+        IMAGE_TAG = 'latest'
     }
 
     stages {
 
-        stage('DockerHub Login') {
+        stage('Pull Image from Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds',
-                                                 usernameVariable: 'USER',
-                                                 passwordVariable: 'PASS')]) {
-                    sh 'echo "$PASS" | docker login -u "$USER" --password-stdin'
+                script {
+                    echo "Pulling image: ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${IMAGE_TAG}"
+                    sh """
+                        docker pull ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${IMAGE_TAG}
+                    """
                 }
             }
         }
 
-        stage('Pull Image') {
+        stage('Run Container') {
             steps {
-                sh 'docker pull ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${BUILD_NUMBER}'
+                script {
+                    echo "Running container from image..."
+
+                    // Stop & remove existing container if present
+                    sh """
+                        if [ \$(docker ps -aq -f name=mycontainer) ]; then
+                            docker rm -f mycontainer
+                        fi
+                    """
+
+                    // Run new container
+                    sh """
+                        docker run -d --name mycontainer ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${IMAGE_TAG}
+                    """
+                }
             }
         }
 
-        stage('Stop Old Container') {
+        stage('Verify Container') {
             steps {
-                sh 'docker rm -f newcontainer || true'
+                script {
+                    echo "Listing running containers..."
+                    sh "docker ps"
+                }
             }
         }
-
-        stage('Run New Container') {
-            steps {
-                sh '''
-                docker run -d --name newcontainer \
-                ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:${BUILD_NUMBER}
-                '''
-            }
-        }
-
     }
 }
 
